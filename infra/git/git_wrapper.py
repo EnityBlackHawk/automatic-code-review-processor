@@ -19,6 +19,10 @@ class GitWrapper(ABC):
     def get_merge_request(self, id_merge_request, id_project):
         pass
 
+    @abstractmethod 
+    def get_all_merges(self, **kwargs):
+        pass
+
     @abstractmethod
     def get_commits(self, merge_request):
         pass

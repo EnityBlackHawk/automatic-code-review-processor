@@ -33,6 +33,7 @@ def execute():
     print(f'automatic-code-review::execute [EXTRA_ARGUS] {extra_args} ')
 
     project_target_id = __get_project_target_id(args, git_enum, extra_args)
+    user_opened_merges = __get_user_opened_merges(args, git_enum)
     path_resources = os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + "/../resources")
 
     with open(path_resources + "/config.json", 'r') as content:
@@ -58,6 +59,7 @@ def execute():
         merge=merge,
         stage=args.STAGE,
         config_global=config,
+        user_opened_mergers=user_opened_merges
     )
 
     qt_pending_comment, comments_added = publish.publish(
@@ -120,3 +122,19 @@ def __get_project_target_id(args, git_enum, extra_args):
     )
 
     return project.forked_from_project['id']
+
+
+def __get_user_opened_merges(args, git_enum):
+    
+    git = git_wrapper_factory.create(
+        git_enum=git_enum,
+        git_url=args.GIT_URL,
+        git_token=args.GIT_TOKEN,
+    )
+
+    mergeAuthor = git.get_merge_request(args.GIT_MERGE_REQUEST_ID, args.GIT_PROJECT_ID).attributes["author"]
+    raw_merges = git.get_all_merges(get_all=True, state='opened', author_username=mergeAuthor["username"])
+    
+    merges = [x.attributes for x in raw_merges]
+
+    return merges

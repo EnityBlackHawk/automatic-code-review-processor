@@ -20,6 +20,9 @@ class GitLabWrapper(GitWrapper):
 
     def get_id_project_source_by_id_project_target(self, id_project_target, id_merge_request):
         return self.gitlab_api.projects.get(id_project_target).mergerequests.get(id_merge_request).source_project_id
+    
+    def get_all_merges(self, **kwargs):
+        return self.gitlab_api.mergerequests.list(**kwargs)
 
     def get_changes_by_merge(self, id_merge_request, id_project):
         merge_request = self.gitlab_api.projects.get(id_project).mergerequests.get(id_merge_request)

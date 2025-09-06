@@ -135,7 +135,7 @@ def __verify_can_add_comment(comment, config_global, changes):
     return _get_type_by_scope("UNCHANGED", comment_scope) == "THREAD"
 
 
-def review(path_source, path_target, path_resources, merge, stage, config_global, path_source_v2):
+def review(path_source, path_target, path_resources, merge, stage, config_global, path_source_v2, user_opened_mergers):
     print('automatic-code-review::review - start')
 
     if 'regexToSkip' in config_global and re.search(config_global['regexToSkip'], merge['title']):
@@ -167,6 +167,7 @@ def review(path_source, path_target, path_resources, merge, stage, config_global
             path_output=path_output_data,
             path_source_v2=path_source_v2,
             merge=merge,
+            user_opened_mergers=user_opened_mergers
         )
 
         path_extension = extension_to_run['extension_path']
@@ -301,6 +302,7 @@ def __write_config(
         path_output,
         merge,
         path_source_v2,
+        user_opened_mergers
 ):
     path_config = path_resources + "/configs/" + extension + "/config.json"
     path_config_final = path_extensions + '/' + extension + "/config.json"
@@ -313,6 +315,7 @@ def __write_config(
         config['path_source_v2'] = path_source_v2
         config['path_output'] = path_output
         config['merge'] = merge
+        config['user_opened_mergers'] = user_opened_mergers
 
     with open(path_config_final, 'w') as arquivo:
         json.dump(config, arquivo, indent=True)
